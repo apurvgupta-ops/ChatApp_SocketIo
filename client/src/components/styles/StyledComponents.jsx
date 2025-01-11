@@ -1,4 +1,5 @@
 import { styled } from "@mui/material";
+import { Link as LinkComponent } from "react-router-dom";
 
 export const VisuallyHiddenInput = styled("input")({
   border: 0,
@@ -10,4 +11,10 @@ export const VisuallyHiddenInput = styled("input")({
   position: "absolute",
   whiteSpace: "nowrap",
   width: 1,
+});
+export const Link = styled(LinkComponent)({
+  padding: "1rem",
+  textDecoration: "none",
+  color: "black",
+  "&:hover": bgColor,
 });

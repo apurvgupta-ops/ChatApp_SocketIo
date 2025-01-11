@@ -3,6 +3,8 @@ import Title from "../shared/Title";
 import Header from "../shared/Header";
 import { Grid } from "@mui/material";
 
+import ChatList from "../specific/ChatList";
+
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
     return (
@@ -17,7 +19,7 @@ const AppLayout = () => (WrappedComponent) => {
             sx={{ display: { xs: "none", sm: "block" } }}
             height={"100%"}
           >
-            First
+            <ChatList chats={[1, 2, 3, 4, 5]} />
           </Grid>
           <Grid
             item
@@ -40,8 +42,8 @@ const AppLayout = () => (WrappedComponent) => {
                 xs: "none",
                 md: "block",
               },
-              padding: "2rem",
-              bgcolor: "rgba(0,0,0,0.85)",
+              // padding: "2rem",
+              // bgcolor: "rgba(0,0,0,0.85)",
             }}
           >
             Third
