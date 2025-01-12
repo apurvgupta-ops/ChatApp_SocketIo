@@ -5,7 +5,7 @@ import { Box, Stack, Typography } from "@mui/material";
 const ChatItems = ({
   avatar = [],
   name,
-  _id, 
+  _id,
   groupChat = false,
   sameSender,
   isOnline,
@@ -15,6 +15,9 @@ const ChatItems = ({
 }) => {
   return (
     <Link
+      sx={{
+        padding: "0",
+      }}
       to={`/chat/${_id}`}
       onContextMenu={(e) => handleDeleteChatOpen(e, _id, groupChat)}
     >

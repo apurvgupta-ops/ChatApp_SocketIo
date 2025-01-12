@@ -12,9 +12,11 @@ export const VisuallyHiddenInput = styled("input")({
   whiteSpace: "nowrap",
   width: 1,
 });
-export const Link = styled(LinkComponent)({
-  padding: "1rem",
-  textDecoration: "none",
-  color: "black",
-  "&:hover": bgColor,
-});
+export const Link = styled(LinkComponent)`
+  textdecoration: none;
+  color: black;
+  padding: 1rem;
+  &:hover {
+    background-color: "#f0f0f0";
+  }
+`;

@@ -6,12 +6,41 @@ const ChatList = ({
   chats = [],
   chatId,
   onlineUsers = [],
-  newMessageAlert = [],
+  newMessageAlert = [
+    {
+      chatId: "",
+      count: 0,
+    },
+  ],
+  handleDeleteChat,
 }) => {
   return (
     <Stack direction={"column"} width={"100%"}>
-      {chats?.map((data) => {
-        return <ChatItems />;
+      {chats?.map((data, index) => {
+        const { avatar, name, _id, groupChat, members } = data;
+        const isOnline = members?.some((member) =>
+          onlineUsers.includes(member)
+        );
+
+        console.log(newMessageAlert);
+        const newMessageAlerts = newMessageAlert.find(
+          ({ chatId }) => chatId === _id
+        );
+        console.log(newMessageAlerts);
+        return (
+          <ChatItems
+            isOnline={isOnline}
+            newMessageAlert={newMessageAlerts}
+            index={index}
+            avatar={avatar}
+            name={name}
+            _id={_id}
+            key={_id}
+            groupChat={groupChat}
+            sameSender={chatId === _id}
+            handleDeleteChatOpen={handleDeleteChat}
+          />
+        );
       })}
     </Stack>
   );
