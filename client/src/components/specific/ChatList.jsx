@@ -22,11 +22,10 @@ const ChatList = ({
           onlineUsers.includes(member)
         );
 
-        console.log(newMessageAlert);
         const newMessageAlerts = newMessageAlert.find(
           ({ chatId }) => chatId === _id
         );
-        console.log(newMessageAlerts);
+
         return (
           <ChatItems
             isOnline={isOnline}
