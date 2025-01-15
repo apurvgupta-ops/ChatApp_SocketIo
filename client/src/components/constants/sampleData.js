@@ -38,15 +38,54 @@ export const sampleNotidications = [
   {
     _id: "1",
     sender: {
-      avatar: ["https://www.w3schools.com/howto/img_avatar.png"],
       name: "Jogn Joe",
+      avatar: ["https://www.w3schools.com/howto/img_avatar.png"],
     },
   },
   {
     _id: "2",
     sender: {
-      avatar: ["https://www.w3schools.com/howto/img_avatar.png"],
       name: "Jogn Joe",
+      avatar: ["https://www.w3schools.com/howto/img_avatar.png"],
     },
+  },
+];
+
+export const sampleMessage = [
+  {
+    attachments: [
+      {
+        public_id: "hello",
+        url: "https://www.w3schools.com/howto/img_avatar.png",
+      },
+    ],
+
+    content: "helllo world",
+    _id: "123",
+    sender: {
+      _id: "1",
+      name: "chaman",
+    },
+
+    chat: "chatId",
+    createdAt: "2025-01-15T10:06:45.427Z",
+  },
+  {
+    attachments: [
+      {
+        public_id: "hello",
+        url: "https://www.w3schools.com/howto/img_avatar.png",
+      },
+    ],
+
+    content: "helllo world",
+    _id: "12",
+    sender: {
+      _id: "12",
+      name: "chaman",
+    },
+
+    chat: "chatId",
+    createdAt: "2025-01-15T10:06:45.427Z",
   },
 ];
