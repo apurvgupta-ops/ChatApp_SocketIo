@@ -31,4 +31,4 @@ class ErrorHandler extends Error {
   }
 }
 
-export { sendToken, TryCatch, ErrorHandler };
+export { sendToken, TryCatch, ErrorHandler, cookieOptions };
