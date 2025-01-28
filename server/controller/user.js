@@ -11,6 +11,9 @@ const signupController = async (req, res) => {
   try {
     const { name, userName, password, avatar } = req.body;
 
+    if (!name || !userName || !password) {
+      return next(new ErrorHandler("Please provide all the details", 404));
+    }
     const user = await User.create({ name, userName, password, avatar });
 
     sendToken(res, user, 201, "User Created Successfully");

@@ -4,10 +4,18 @@ import cookieParser from "cookie-parser";
 import UserRoutes from "./routes/user.js";
 import { dbConnect } from "./utils/dbConnect.js";
 import { errorMiddleware } from "./middlewares/error.js";
+import { createUser } from "./seeders/user.js";
 
 dotenv.config();
+
+// For create a fake Users
+// createUser(10);
+
 const app = express();
+
+// DB connection
 dbConnect(process.env.MONGODB_URI);
+
 // middlewares
 app.use(express.json());
 app.use(cookieParser());
@@ -24,6 +32,7 @@ app.get("/", (req, res) => {
 app.use(errorMiddleware);
 
 const port = process.env.PORT || 5000;
+
 app.listen(port, () => {
   console.log(`Server is running ${port}`);
 });
