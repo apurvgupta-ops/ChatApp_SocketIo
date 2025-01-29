@@ -163,7 +163,12 @@ const removeMember = TryCatch(async (req, res, next) => {
 
   await chat.save();
 
-  emitEvents(req, ALERT, chat.members, `${allUserNames} remove from the group`);
+  emitEvents(
+    req,
+    ALERT,
+    chat.members,
+    `${userThatWillBeRemoved} remove from the group`
+  );
   emitEvents(req, REFETCH_CHAT, chat.members);
 
   res.status(200).json({
@@ -173,35 +178,40 @@ const removeMember = TryCatch(async (req, res, next) => {
 });
 
 const leaveGroup = TryCatch(async (req, res, next) => {
-  const { chatId, userId } = req.body;
+  const { chatId } = req.params;
 
-  const [chat, userThatWillBeRemoved] = await Promise.all([
-    Chat.findById(chatId),
-    User.findById(userId),
-  ]);
+  const chat = await Chat.findById(chatId);
 
   if (!chat) return next(new ErrorHandler("No chat found", 404));
 
   if (!chat.groupChat)
     return next(new ErrorHandler("this is not a groupChat", 400));
 
-  if (userId.toString() !== chat.creator._id.toString()) {
-    return next(new ErrorHandler("you are not admin"));
-  }
-
-  if (chat.members.length <= 3) {
-    return next(new ErrorHandler("Group Contain atleast 3 members", 400));
-  }
-
-  chat.members = chat.members.filter(
-    (id) => id.toString() !== userId.toString()
+  const remainingMembers = chat.members.filter(
+    (i) => i.toString() !== req.user.toString()
   );
 
-  await chat.save();
+  if (req.user.toString() === chat.creator.toString()) {
+    const assignNewCreator = Math.floor(
+      Math.random() * remainingMembers.length
+    );
+    const newCreator = remainingMembers[assignNewCreator];
+    chat.creator = newCreator;
+  }
 
-  emitEvents(req, ALERT, chat.members, `${allUserNames} remove from the group`);
-  emitEvents(req, REFETCH_CHAT, chat.members);
+  chat.members = remainingMembers;
 
+  const [user] = await Promise.all([User.findById(req.user), chat.save()]);
+
+  emitEvents(req, ALERT, chat.members, `${user.name} has left the group`);
+
+  res.status(200).json({
+    success: true,
+    chat,
+  });
+});
+
+const sendAttachment = TryCatch(async (req, res, next) => {
   res.status(200).json({
     success: true,
     chat,
@@ -215,4 +225,5 @@ export {
   addNewMember,
   removeMember,
   leaveGroup,
+  sendAttachment,
 };

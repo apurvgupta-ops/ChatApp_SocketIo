@@ -7,6 +7,7 @@ import {
   addNewMember,
   removeMember,
   leaveGroup,
+  sendAttachment,
 } from "../controller/chat.js";
 
 const router = express.Router();
@@ -18,6 +19,7 @@ router.get("/my-chats", getMyChats);
 router.get("/my-group", getMyGroups);
 router.put("/add-members", addNewMember);
 router.put("/remove-member", removeMember);
-router.delete("/leave-group", leaveGroup);
+router.delete("/leave-group/:chatId", leaveGroup);
+router.post("/send-attachment", sendAttachment);
 
 export default router;
