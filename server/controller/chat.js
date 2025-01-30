@@ -1,8 +1,18 @@
-import { ALERT, REFETCH_CHAT } from "../constants/event.js";
+import {
+  ALERT,
+  NEW_ATTACHMENT,
+  NEW_MESSAGE,
+  REFETCH_CHAT,
+} from "../constants/event.js";
 import { Chat } from "../models/chat.js";
 import { User } from "../models/user.js";
+import { Message } from "../models/message.js";
 import { emitEvents } from "../utils/event.js";
-import { ErrorHandler, TryCatch } from "../utils/features.js";
+import {
+  deleteFilesFromCloudinary,
+  ErrorHandler,
+  TryCatch,
+} from "../utils/features.js";
 
 const newGroup = TryCatch(async (req, res, next) => {
   const { name, members } = req.body;
@@ -212,12 +222,142 @@ const leaveGroup = TryCatch(async (req, res, next) => {
 });
 
 const sendAttachment = TryCatch(async (req, res, next) => {
+  const { chatId } = req.body;
+  const userId = req.user;
+
+  const [chat, user] = await Promise.all([
+    Chat.findById(chatId),
+    User.findById(userId, "name"),
+  ]);
+
+  if (!chat) {
+    return next(new ErrorHandler("Chat Not Found", 400));
+  }
+
+  //Upload attachment Here;
+  const files = req.files || [];
+
+  if (!files.length < 1)
+    return next(new ErrorHandler("Please provide files", 400));
+
+  const attachments = [];
+
+  const messageForDb = {
+    content: "",
+    attachments,
+    sender: user._id,
+    chat: chatId,
+  };
+
+  const messageForRealTime = {
+    ...messageForDb,
+    sender: {
+      _id: user._id,
+      name: user.name,
+    },
+  };
+
+  const message = await Message.create(messageForDb);
+
+  emitEvents(req, NEW_ATTACHMENT, chat.members, {
+    message: messageForRealTime,
+  });
+  emitEvents(req, NEW_MESSAGE, chat.members, {
+    chatId,
+  });
+
   res.status(200).json({
     success: true,
-    chat,
+    message,
   });
 });
 
+const getChatDetails = TryCatch(async (req, res, next) => {
+  if (req.query.populate === "true") {
+    const chat = await Chat.findById(req.params.chatId)
+      .populate("members", "name avatar")
+      .lean();
+
+    if (!chat) return next(new ErrorHandler("Chat Not found", 404));
+
+    chat.members = chat.members.map(({ _id, name, avatar }) => ({
+      _id,
+      name,
+      avatar: avatar.url,
+    }));
+
+    return res.status(200).json({
+      success: true,
+      chat,
+    });
+  } else {
+    const chat = await Chat.findById(req.params.chatId);
+    if (!chat) return next(new ErrorHandler("Chat Not found", 404));
+    return res.status(200).json({
+      success: true,
+      chat,
+    });
+  }
+});
+
+const renameGroup = TryCatch(async (req, res, next) => {
+  const { chatId } = req.params;
+  const { name } = req.body;
+  const chat = await Chat.findById(chatId);
+
+  if (!chat) return next(new ErrorHandler("Chat not found", 404));
+
+  if (chat.creator.toString() !== req.user.toString()) {
+    return next(
+      new ErrorHandler("You are not allowed to change name of the group")
+    );
+  }
+  chat.name = name;
+  await chat.save();
+
+  emitEvents(req, REFETCH_CHAT, chat.members, {
+    message: `Group name Updated ${name}`,
+  });
+
+  res.status(201).json({
+    success: true,
+    message: "Name updated successfully",
+  });
+});
+
+const deleteChat = TryCatch(async (req, res, next) => {
+  const { chatId } = req.params;
+
+  const chat = await Chat.findById(chatId);
+  if (!chat) return next(new ErrorHandler("Chat Not Found", 404));
+
+  if (chat.creator.toString() !== req.user.toString())
+    return next(new ErrorHandler("You are not allowed to delete Chat"));
+
+  const messageWithAttachments = await Message.find({
+    chat: chatId,
+    attachments: { $exists: true, $ne: [] },
+  });
+
+  const public_ids = [];
+
+  messageWithAttachments.forEach(({ attachment }) =>
+    attachment.forEach(({ public_id }) => public_ids.push(public_id))
+  );
+
+  await Promise.all([
+    deleteFilesFromCloudinary(public_ids),
+    chat.deleteOne(),
+    Message.deleteMany({ chat: chatId }),
+  ]);
+
+  emitEvents(req, REFETCH_CHAT, members);
+
+  return res.status(200).json({
+    success: true,
+    message: "Chat Deleted Successfully",
+  });
+});
 export {
   newGroup,
   getMyChats,
@@ -226,4 +366,7 @@ export {
   removeMember,
   leaveGroup,
   sendAttachment,
+  getChatDetails,
+  renameGroup,
+  deleteChat,
 };

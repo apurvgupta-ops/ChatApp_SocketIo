@@ -31,4 +31,14 @@ class ErrorHandler extends Error {
   }
 }
 
-export { sendToken, TryCatch, ErrorHandler, cookieOptions };
+const deleteFilesFromCloudinary = async (public_ids) => {
+  console.log(public_ids);
+};
+
+export {
+  sendToken,
+  TryCatch,
+  ErrorHandler,
+  cookieOptions,
+  deleteFilesFromCloudinary,
+};
