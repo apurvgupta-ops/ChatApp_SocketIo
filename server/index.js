@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import UserRoutes from "./routes/user.js";
 import { dbConnect } from "./utils/dbConnect.js";
 import { errorMiddleware } from "./middlewares/error.js";
-import { createUser } from "./seeders/user.js";
+import { createUser } from "./seeders/fakeData.js";
 
 dotenv.config();
 

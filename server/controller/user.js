@@ -1,11 +1,15 @@
 import { compare } from "bcrypt";
 import { User } from "../models/user.js";
+import { Request } from "../models/request.js";
+import { Chat } from "../models/chat.js";
 import {
   cookieOptions,
   ErrorHandler,
   sendToken,
   TryCatch,
 } from "../utils/features.js";
+import { emitEvents } from "../utils/event.js";
+import { NEW_REQUEST } from "../constants/event.js";
 
 const signupController = async (req, res) => {
   try {
@@ -61,6 +65,51 @@ const logout = TryCatch(async (req, res, next) => {
 
 const search = TryCatch(async (req, res, next) => {
   const { name } = req.query;
+
+  // All my chats
+  const myChats = await Chat.find({ groupChat: false, members: req.user })
+
+  // All the users from my chats means friends or peoples i have chatted with,
+  const allUsersFromMyChats = myChats.flatMap((chat) => chat.members)
+
+  const allUsersExceptMeAndFriends = await User.find({
+    _id: { $nin: allUsersFromMyChats },
+    name: { $regex: name, $options: "i" }
+  })
+
+  const users = allUsersExceptMeAndFriends.map(({ _id, name, avatar }) => ({
+    _id, name, avatar: avatar.url
+  }))
+
+
+  return res.status(200).json({
+    success: true,
+    users
+  })
 });
 
-export { loginController, signupController, getProfile, logout };
+const sendRequest = TryCatch(async (req, res, next) => {
+  const { userId } = req.body;
+  const request = await Request.findOne({
+    $or: [
+      { sender: req.user, receiver: userId },
+      { sender: userId, receiver: req.user }
+    ]
+  })
+  if (request) return next(new ErrorHandler("Request already send", 400))
+
+  await Request.create({
+    sender: req.user,
+    receiver: userId
+  })
+
+
+  emitEvents(req, NEW_REQUEST, [userId], "request")
+
+  return res.status(200).json({
+    success: true,
+    message: "Friend Request Sent"
+  })
+});
+
+export { loginController, signupController, getProfile, logout, search, sendRequest };
