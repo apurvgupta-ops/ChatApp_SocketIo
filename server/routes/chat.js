@@ -11,6 +11,7 @@ import {
   getChatDetails,
   renameGroup,
   deleteChat,
+  getMessages,
 } from "../controller/chat.js";
 
 const router = express.Router();
@@ -31,4 +32,5 @@ router
   .put(renameGroup)
   .delete(deleteChat);
 
+router.get("/messages", getMessages)
 export default router;

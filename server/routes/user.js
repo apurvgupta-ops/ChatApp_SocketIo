@@ -4,7 +4,11 @@ import {
   loginController,
   logout,
   search,
-  signupController, sendRequest
+  signupController,
+  sendRequest,
+  acceptRequest,
+  getMyAllFriendRequestNotifications,
+  getMyAllFriends,
 } from "../controller/user.js";
 import { singleFile } from "../middlewares/uploadFiles.js";
 import { isAuthenticated } from "../middlewares/auth.js";
@@ -19,5 +23,8 @@ router.get("/me", getProfile);
 router.get("/logout", logout);
 router.get("/search", search);
 router.put("/send-request", sendRequest);
+router.put("/accept-request", acceptRequest);
+router.get("/all-request", getMyAllFriendRequestNotifications);
+router.get("/get-my-friends", getMyAllFriends);
 
 export default router;

@@ -2,6 +2,7 @@ import {
   ALERT,
   NEW_ATTACHMENT,
   NEW_MESSAGE,
+  NEW_MESSAGE_ALERT,
   REFETCH_CHAT,
 } from "../constants/event.js";
 import { Chat } from "../models/chat.js";
@@ -262,7 +263,7 @@ const sendAttachment = TryCatch(async (req, res, next) => {
   emitEvents(req, NEW_ATTACHMENT, chat.members, {
     message: messageForRealTime,
   });
-  emitEvents(req, NEW_MESSAGE, chat.members, {
+  emitEvents(req, NEW_MESSAGE_ALERT, chat.members, {
     chatId,
   });
 
@@ -381,6 +382,7 @@ const getMessages = TryCatch(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
+    messages,
     totalPages
   })
 

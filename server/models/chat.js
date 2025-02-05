@@ -1,4 +1,4 @@
-import mongoose, { Schema, Model, model, Types, Types } from "mongoose";
+import mongoose, { Schema, Model, model, Types } from "mongoose";
 
 const ChatSchema = new Schema(
   {
