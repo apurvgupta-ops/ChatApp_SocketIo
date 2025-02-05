@@ -1,6 +1,7 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
+import { server } from "./components/constants/config";
 
 const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./pages/Login"));
@@ -12,6 +13,9 @@ const LoaderLayout = lazy(() => import("./components/Layout/LoaderLayout"));
 const user = true;
 
 const App = () => {
+  useEffect(() => {
+    console.log({ server });
+  }, []);
   return (
     <BrowserRouter>
       <Suspense fallback={<LoaderLayout />}>

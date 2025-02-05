@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from 'cors'
 import cookieParser from "cookie-parser";
 import UserRoutes from "./routes/user.js";
 import ChatRoutes from "./routes/chat.js";
@@ -29,6 +30,10 @@ export const userSocketIds = new Map()
 // middlewares
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors({
+  origin: "*",
+  credential: true
+}))
 
 // Attach External routes
 app.use("/api/v1/users", UserRoutes);
