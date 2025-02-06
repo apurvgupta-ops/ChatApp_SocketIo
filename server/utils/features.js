@@ -34,9 +34,6 @@ class ErrorHandler extends Error {
   }
 }
 
-const deleteFilesFromCloudinary = async (public_ids) => {
-  console.log(public_ids);
-};
 
 
 const getSockets = (users = []) => {
@@ -46,11 +43,15 @@ const getSockets = (users = []) => {
 }
 
 
+const getBase64 = (file) =>
+  `data:${file.mimetype};base64,${file.buffer.toString("base64")}`
+
+
+
 export {
   sendToken,
   TryCatch,
   ErrorHandler,
   cookieOptions,
-  deleteFilesFromCloudinary,
-  getSockets
+  getSockets, getBase64
 };

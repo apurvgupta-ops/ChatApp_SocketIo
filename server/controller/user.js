@@ -10,27 +10,49 @@ import {
 } from "../utils/features.js";
 import { emitEvents } from "../utils/event.js";
 import { NEW_REQUEST, REFETCH_CHAT } from "../constants/event.js";
+import { uploadFilesToCloudinary } from "../utils/cloudinary.js";
 
-const signupController = async (req, res) => {
-  try {
-    const { name, userName, password, avatar } = req.body;
+const signupController = TryCatch(async (req, res, next) => {
+  const { name, username, password, bio } = req.body;
+  const file = req.file
 
-    if (!name || !userName || !password) {
-      return next(new ErrorHandler("Please provide all the details", 404));
-    }
-    const user = await User.create({ name, userName, password, avatar });
-
-    sendToken(res, user, 201, "User Created Successfully");
-  } catch (error) {
-    console.error(error);
+  if (!name || !username || !password) {
+    return next(new ErrorHandler("Please provide all the details", 404));
   }
-};
+  console.log(file)
+  console.count("calling")
+  let result;
+  let avatar;
+
+  if (file) {
+    result = await uploadFilesToCloudinary([file])
+    console.log({ result })
+    console.count("calling")
+  }
+
+  if (result) {
+    console.count("calling")
+
+    avatar = {
+      public_id: result.public_id,
+      url: result.url
+    }
+  }
+  console.count("calling", avatar)
+
+  const user = await User.create({ name, username, password, avatar, bio });
+  console.count("calling")
+
+  sendToken(res, user, 201, "User Created Successfully");
+  console.count("calling")
+
+})
 
 const loginController = TryCatch(async (req, res, next) => {
-  const { userName, password } = req.body;
-  const userExist = await User.findOne({ userName }).select("+password");
+  const { username, password } = req.body;
+  const userExist = await User.findOne({ username }).select("+password");
 
-  if (!userName || !password) {
+  if (!username || !password) {
     return next(new ErrorHandler("Please enter all the credentials", 404));
   }
 

@@ -5,6 +5,7 @@ import { CssBaseline } from "@mui/material";
 import { HelmetProvider } from "react-helmet-async";
 import { Provider } from "react-redux";
 import store from "./redux/store.js";
+import { Toaster } from "react-hot-toast";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -16,5 +17,7 @@ createRoot(document.getElementById("root")).render(
         </div>
       </HelmetProvider>
     </Provider>
+
+    <Toaster position="bottom-center" />
   </StrictMode>
 );

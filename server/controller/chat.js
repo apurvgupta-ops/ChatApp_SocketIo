@@ -10,10 +10,10 @@ import { User } from "../models/user.js";
 import { Message } from "../models/message.js";
 import { emitEvents } from "../utils/event.js";
 import {
-  deleteFilesFromCloudinary,
   ErrorHandler,
   TryCatch,
 } from "../utils/features.js";
+import { deleteFilesFromCloudinary } from "../utils/cloudinary.js";
 
 const newGroup = TryCatch(async (req, res, next) => {
   const { name, members } = req.body;

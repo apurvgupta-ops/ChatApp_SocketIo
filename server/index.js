@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from 'cors'
 import cookieParser from "cookie-parser";
+import { v2 as cloudinary } from 'cloudinary'
 import UserRoutes from "./routes/user.js";
 import ChatRoutes from "./routes/chat.js";
 import { dbConnect } from "./utils/dbConnect.js";
@@ -24,20 +25,30 @@ const server = createServer(app)
 const io = new Server(server, {})
 
 // DB connection
-dbConnect(process.env.MONGODB_URI);
+const mongoUrl = process.env.MONGODB_URI
+const port = process.env.PORT || 5000;
 export const userSocketIds = new Map()
+
+
+dbConnect(mongoUrl);
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+})
+
 
 // middlewares
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: "*",
-  credential: true
+  origin: "http://localhost:5173",
+  credentials: true // to use cookies in the system
 }))
 
 // Attach External routes
-app.use("/api/v1/users", UserRoutes);
-app.use("/api/v1/chats", ChatRoutes);
+app.use("/api/v1/user", UserRoutes);
+app.use("/api/v1/chat", ChatRoutes);
 
 // testing route
 app.get("/", (req, res) => {
@@ -107,7 +118,6 @@ io.on("connection", (socket) => {
 // Error handling middleware
 app.use(errorMiddleware);
 
-const port = process.env.PORT || 5000;
 
 server.listen(port, () => {
   console.log(`Server is running ${port}`);

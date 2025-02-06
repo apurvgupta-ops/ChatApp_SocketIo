@@ -7,7 +7,7 @@ const UserSchema = new Schema(
       type: String,
       required: true,
     },
-    userName: {
+    username: {
       type: String,
       required: true,
       unique: true,
@@ -16,6 +16,10 @@ const UserSchema = new Schema(
       type: String,
       required: true,
       select: false,
+    },
+    bio: {
+      type: String,
+      required: true,
     },
     avatar: {
       public_id: {

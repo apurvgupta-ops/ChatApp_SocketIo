@@ -17,7 +17,7 @@ const router = express.Router();
 router.post("/signup", singleFile, signupController);
 router.post("/login", loginController);
 
-router.use(isAuthenticated); // if dont need to pass everytime
+router.use(isAuthenticated); // if dont need to pass everytime in every function
 
 router.get("/me", getProfile);
 router.get("/logout", logout);
