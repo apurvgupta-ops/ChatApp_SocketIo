@@ -1,7 +1,7 @@
 import mongoose, { Schema, Model, model } from "mongoose";
 import { Types } from "mongoose";
 
-const UserSchema = new Schema(
+const RequestSchema = new Schema(
   {
     status: {
       type: String,
@@ -21,4 +21,4 @@ const UserSchema = new Schema(
 );
 
 export const Request =
-  mongoose.models.UserSchema || model("UserSchema", UserSchema);
+  mongoose.models.RequestSchema || model("RequestSchema", RequestSchema);

@@ -1,25 +1,59 @@
 import React from "react";
 import Title from "../shared/Title";
 import Header from "../shared/Header";
-import { Grid } from "@mui/material";
+import { Drawer, Grid, Skeleton } from "@mui/material";
 
 import ChatList from "../specific/ChatList";
 import { sampleChats } from "../constants/sampleData";
 import { useParams } from "react-router-dom";
 import Profile from "../specific/Profile";
+import { useMyChatsQuery } from "../../redux/api/api";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsMobile } from "../../redux/reducers/misc";
+import { useErrors } from "../../hooks/hook";
 
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
     const params = useParams();
-    console.log(params);
+    const dispatch = useDispatch();
     const chatId = params.chatId;
+
+    const { isMobile } = useSelector((state) => state.misc);
+    const { user } = useSelector((state) => state.auth);
+
+    const { isLoading, data, isError, error } = useMyChatsQuery();
+
+    useErrors([{ isError, error }]);
+
+    const handleClose = () => dispatch(setIsMobile(false));
 
     const handleDeleteChat = (e, _id, groupChat) =>
       console.log(`delete chats ${_id}`);
+
     return (
       <div>
         <Title />
         <Header />
+
+        {isLoading ? (
+          <Skeleton />
+        ) : (
+          <Drawer open={isMobile} onClose={handleClose}>
+            <ChatList
+              w="70vw"
+              chats={data?.chats}
+              chatId={chatId}
+              // newMessageAlert={[
+              //   {
+              //     chatId,
+              //     count: 4,
+              //   },
+              // ]}
+              // onlineUsers={["1", "2"]}
+              handleDeleteChat={handleDeleteChat}
+            />
+          </Drawer>
+        )}
         <Grid container height={"calc(100vh - 4rem)"}>
           <Grid
             item
@@ -28,18 +62,22 @@ const AppLayout = () => (WrappedComponent) => {
             sx={{ display: { xs: "none", sm: "block" } }}
             height={"100%"}
           >
-            <ChatList
-              chats={sampleChats}
-              chatId={chatId}
-              newMessageAlert={[
-                {
-                  chatId,
-                  count: 4,
-                },
-              ]}
-              onlineUsers={["1", "2"]}
-              handleDeleteChat={handleDeleteChat}
-            />
+            {isLoading ? (
+              <Skeleton />
+            ) : (
+              <ChatList
+                chats={data?.chats}
+                chatId={chatId}
+                // newMessageAlert={[
+                //   {
+                //     chatId,
+                //     count: 4,
+                //   },
+                // ]}
+                // onlineUsers={["1", "2"]}
+                handleDeleteChat={handleDeleteChat}
+              />
+            )}
           </Grid>
           <Grid
             item
@@ -66,7 +104,7 @@ const AppLayout = () => (WrappedComponent) => {
               bgcolor: "rgba(0,0,0,0.85)",
             }}
           >
-            <Profile />
+            <Profile user={user} />
           </Grid>
         </Grid>
       </div>

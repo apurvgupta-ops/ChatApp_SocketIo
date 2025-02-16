@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "axios";
-
+import { useDispatch, useSelector } from "react-redux";
 import { CameraAlt } from "@mui/icons-material";
 import { VisuallyHiddenInput } from "../components/styles/StyledComponents";
 
@@ -18,10 +18,12 @@ import { useInputValidation, useFileHandler } from "6pp";
 import { server } from "../components/constants/config";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { userExist } from "../redux/reducers/auth";
 
 const Login = () => {
   const [isLogin, setLogin] = useState(true);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const toggleLogin = () => setLogin((prev) => !prev);
 
@@ -48,10 +50,10 @@ const Login = () => {
         config
       );
 
-      console.log(data);
       if (data) {
-        toast.success(data.message); // TODO: show messgae coming from api
-        // navigate("/");
+        toast.success(data.message);
+        dispatch(userExist(data));
+        console.log(data);
       }
     } catch (error) {
       toast.error("Login failed"); // TODO: show messgae coming from api

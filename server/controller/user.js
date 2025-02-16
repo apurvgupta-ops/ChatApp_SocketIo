@@ -14,39 +14,37 @@ import { uploadFilesToCloudinary } from "../utils/cloudinary.js";
 
 const signupController = TryCatch(async (req, res, next) => {
   const { name, username, password, bio } = req.body;
-  const file = req.file
+  const file = req.file;
 
   if (!name || !username || !password) {
     return next(new ErrorHandler("Please provide all the details", 404));
   }
-  console.log(file)
-  console.count("calling")
+  console.count("calling");
   let result;
   let avatar;
 
   if (file) {
-    result = await uploadFilesToCloudinary([file])
-    console.log({ result })
-    console.count("calling")
+    result = await uploadFilesToCloudinary([file]);
+    console.log({ result });
+    console.count("calling");
   }
 
   if (result) {
-    console.count("calling")
+    console.count("calling");
 
     avatar = {
-      public_id: result.public_id,
-      url: result.url
-    }
+      public_id: result[0].public_id,
+      url: result[0].url,
+    };
   }
-  console.count("calling", avatar)
+  console.count("calling");
 
   const user = await User.create({ name, username, password, avatar, bio });
-  console.count("calling")
+  console.count("calling");
 
   sendToken(res, user, 201, "User Created Successfully");
-  console.count("calling")
-
-})
+  console.count("calling");
+});
 
 const loginController = TryCatch(async (req, res, next) => {
   const { username, password } = req.body;
@@ -246,5 +244,5 @@ export {
   sendRequest,
   acceptRequest,
   getMyAllFriendRequestNotifications,
-  getMyAllFriends
+  getMyAllFriends,
 };
