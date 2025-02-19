@@ -23,7 +23,11 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { server } from "../constants/config";
 import { userNotExist } from "../../redux/reducers/auth";
-import { setIsMobile, setIsSearch } from "../../redux/reducers/misc";
+import {
+  setIsMobile,
+  setIsNotification,
+  setIsSearch,
+} from "../../redux/reducers/misc";
 
 const SearchDialog = lazy(() => import("../specific/Search"));
 const NotificationDialog = lazy(() => import("../specific/Notifications"));
@@ -33,8 +37,7 @@ const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { isSearch } = useSelector((state) => state.misc);
-  const [isNotifications, setIsNotifications] = useState(false);
+  const { isSearch, isNotification } = useSelector((state) => state.misc);
   const [isNewGroups, setIsNewGroups] = useState(false);
 
   const handleMobile = () => {
@@ -48,8 +51,9 @@ const Header = () => {
     setIsNewGroups((prev) => !prev);
   };
   const NotificationHandler = () => {
-    setIsNotifications((prev) => !prev);
+    dispatch(setIsNotification(true));
   };
+
   const navigateToGroup = () => {
     navigate("/groups");
   };
@@ -130,7 +134,7 @@ const Header = () => {
           <SearchDialog />{" "}
         </Suspense>
       )}
-      {isNotifications && (
+      {isNotification && (
         <Suspense fallback={<Backdrop open />}>
           <NotificationDialog />{" "}
         </Suspense>

@@ -21,4 +21,4 @@ const RequestSchema = new Schema(
 );
 
 export const Request =
-  mongoose.models.RequestSchema || model("RequestSchema", RequestSchema);
+  mongoose.models.Request || model("Request", RequestSchema);

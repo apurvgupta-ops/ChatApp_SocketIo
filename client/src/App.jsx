@@ -5,6 +5,7 @@ import { server } from "./components/constants/config";
 import { useDispatch, useSelector } from "react-redux";
 import { userExist, userNotExist } from "./redux/reducers/auth";
 import axios from "axios";
+import { SocketProvider } from "./socket";
 const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./pages/Login"));
 const Chat = lazy(() => import("./pages/Chat"));
@@ -35,7 +36,13 @@ const App = () => {
     <BrowserRouter>
       <Suspense fallback={<LoaderLayout />}>
         <Routes>
-          <Route element={<ProtectedRoute user={user} />}>
+          <Route
+            element={
+              <SocketProvider>
+                <ProtectedRoute user={user} />
+              </SocketProvider>
+            }
+          >
             <Route path="/" element={<Home />} />
             <Route path="/chat/:chatId" element={<Chat />} />
             <Route path="/groups" element={<Groups />} />

@@ -14,6 +14,7 @@ import { NEW_MESSAGE, NEW_MESSAGE_ALERT } from "./constants/event.js";
 import { v4 as uuid } from "uuid";
 import { getSockets } from "./utils/features.js";
 import { Message } from "./models/message.js";
+import { socketAuthenticator } from "./middlewares/auth.js";
 
 dotenv.config();
 
@@ -22,7 +23,12 @@ dotenv.config();
 
 const app = express();
 const server = createServer(app);
-const io = new Server(server, {});
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    credentials: true,
+  },
+});
 
 // DB connection
 const mongoUrl = process.env.MONGODB_URI;
@@ -54,6 +60,14 @@ app.use("/api/v1/chat", ChatRoutes);
 app.get("/", (req, res) => {
   res.send("Testing");
 });
+
+io.use((socket, next) => {
+  cookieParser()(
+    socket.request,
+    socket.request.res,
+    async (err) => await socketAuthenticator(err, socket, next));
+});
+
 
 // Make Connection with IO.
 io.on("connection", (socket) => {

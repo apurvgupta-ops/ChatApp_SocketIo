@@ -28,4 +28,4 @@ const MessageSchema = new Schema(
 );
 
 export const Message =
-  mongoose.models.MessageSchema || model("MessageSchema", MessageSchema);
+  mongoose.models.Message || model("Message", MessageSchema);

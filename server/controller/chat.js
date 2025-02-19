@@ -50,7 +50,7 @@ const getMyChats = TryCatch(async (req, res, next) => {
     "name avatar"
   );
 
-  console.log({ myChats });
+  // console.log({ myChats });
 
   const transformedChats = myChats.map(({ _id, name, members, groupChat }) => {
     const otherMember = members.find(

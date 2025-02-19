@@ -23,8 +23,8 @@ router.get("/me", getProfile);
 router.get("/logout", logout);
 router.get("/search", search);
 router.put("/send-request", sendRequest);
-router.put("/accept-request", acceptRequest);
 router.get("/all-request", getMyAllFriendRequestNotifications);
+router.put("/accept-request", acceptRequest);
 router.get("/get-my-friends", getMyAllFriends);
 
 export default router;

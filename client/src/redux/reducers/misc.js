@@ -4,6 +4,16 @@ const initialState = {
   isMobile: false,
   isNotification: false,
   isSearch: false,
+  isNewGroup: false,
+  isAddMember: false,
+  isMobileMenuFriend: false,
+  isFileMenu: false,
+  isDeleteMenu: false,
+  uploadingLoader: false,
+  selectedDeleteChat: {
+    chatId: "",
+    groupChart: false,
+  }
 };
 
 const miscSlice = createSlice({
@@ -19,9 +29,24 @@ const miscSlice = createSlice({
     setIsSearch: (state, action) => {
       state.isSearch = action.payload;
     },
+    setIsNewGroup: (state, action) => {
+      state.isSearch = action.payload;
+    },
+    setIsAddMember: (state, action) => {
+      state.isSearch = action.payload;
+    },
+    setIsMobileMenuFriend: (state, action) => {
+      state.isSearch = action.payload;
+    },
+    setIsFileMenu: (state, action) => {
+      state.isSearch = action.payload;
+    },
+    setIsDeleteMenu: (state, action) => {
+      state.isSearch = action.payload;
+    },
   },
 });
 
 export default miscSlice;
-export const { setIsMobile, setIsNotification, setIsSearch } =
+export const { setIsMobile, setIsNotification, setIsSearch, setIsNewGroup, setIsAddMember, setIsMobileMenuFriend, setIsFileMenu, setIsDeleteMenu } =
   miscSlice.actions;

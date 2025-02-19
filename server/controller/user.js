@@ -134,6 +134,7 @@ const sendRequest = TryCatch(async (req, res, next) => {
 
 const acceptRequest = TryCatch(async (req, res, next) => {
   const { requestId, accept } = req.body;
+  console.log({ requestId, accept })
 
   const request = await Request.findById(requestId)
     .populate("sender", "name")
@@ -147,9 +148,9 @@ const acceptRequest = TryCatch(async (req, res, next) => {
     );
 
   if (!accept) {
-    await request.deleteOne();
+    // await request.deleteOne();
 
-    return res.status(200).json({
+    return res.status(500).json({
       success: true,
       message: "Friend Request Rejected",
     });
@@ -175,10 +176,8 @@ const acceptRequest = TryCatch(async (req, res, next) => {
 });
 
 const getMyAllFriendRequestNotifications = TryCatch(async (req, res, next) => {
-  const requests = await Request.find({ receiver: req.user }).populate(
-    "sender",
-    "name avatar"
-  );
+
+  const requests = await Request.find({ receiver: req.user }).populate("sender", "name avatar");
 
   const allRequest = requests.map(({ _id, sender }) => ({
     _id,
