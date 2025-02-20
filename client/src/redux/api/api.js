@@ -6,7 +6,6 @@ const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: server }),
   tagTypes: ["Chat", "User"],
   endpoints: (builder) => ({
-
     myChats: builder.query({
       query: () => ({
         url: "/chat/my-chats",
@@ -51,15 +50,14 @@ const api = createApi({
       invalidatesTags: ["Chat"],
     }),
 
-
     getChatDetails: builder.query({
       query: ({ chatId, populate = false }) => {
-        let url = `chat/${chatId}`;
+        let url = `/chat/${chatId}`;
         if (populate) url += "?populate=true";
         return {
           url,
           credentials: "include",
-        }
+        };
       },
       providesTags: ["Chat"],
     }),
@@ -74,5 +72,5 @@ export const {
   useSendFriendRequestMutation,
   useGetNotificationQuery,
   useAcceptFriendRequestMutation,
-  useGetChatDetailsQuery
+  useGetChatDetailsQuery,
 } = api;

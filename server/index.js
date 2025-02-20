@@ -65,19 +65,18 @@ io.use((socket, next) => {
   cookieParser()(
     socket.request,
     socket.request.res,
-    async (err) => await socketAuthenticator(err, socket, next));
+    async (err) => await socketAuthenticator(err, socket, next)
+  );
 });
-
 
 // Make Connection with IO.
 io.on("connection", (socket) => {
   const user = {
-    _id: "1234",
-    name: "Apurv",
+    _id: socket.user._id,
+    name: socket.user.name,
   };
 
   userSocketIds.set(user._id.toString(), socket.id);
-  console.log("User Connected", userSocketIds);
 
   // For New Messages
   socket.on(NEW_MESSAGE, async ({ chatId, members, message }) => {
@@ -97,9 +96,9 @@ io.on("connection", (socket) => {
       sender: user._id,
       chat: chatId,
     };
-
+    console.log({ members });
     const membersSockets = getSockets(members);
-    console.log({ membersSockets });
+
     // sending response fromm the server.
     io.to(membersSockets).emit(NEW_MESSAGE, {
       chatId,

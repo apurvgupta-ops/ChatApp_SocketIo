@@ -33,8 +33,8 @@ class ErrorHandler extends Error {
 }
 
 const getSockets = (users = []) => {
-  console.log({ users });
-  const sockets = users.map((user) => userSocketIds.get(user._id.toString()));
+  const sockets = users.map((user) => userSocketIds.get(user?.toString()));
+  console.log({ sockets });
   return sockets;
 };
 
