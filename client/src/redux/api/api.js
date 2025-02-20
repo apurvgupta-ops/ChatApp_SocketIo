@@ -50,6 +50,19 @@ const api = createApi({
       }),
       invalidatesTags: ["Chat"],
     }),
+
+
+    getChatDetails: builder.query({
+      query: ({ chatId, populate = false }) => {
+        let url = `chat/${chatId}`;
+        if (populate) url += "?populate=true";
+        return {
+          url,
+          credentials: "include",
+        }
+      },
+      providesTags: ["Chat"],
+    }),
   }),
 });
 
@@ -60,5 +73,6 @@ export const {
   useLazySearchUsersQuery,
   useSendFriendRequestMutation,
   useGetNotificationQuery,
-  useAcceptFriendRequestMutation
+  useAcceptFriendRequestMutation,
+  useGetChatDetailsQuery
 } = api;

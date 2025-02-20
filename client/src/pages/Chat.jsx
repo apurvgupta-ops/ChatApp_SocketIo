@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import AppLayout from "../components/Layout/AppLayout";
-import { IconButton, Stack } from "@mui/material";
+import { IconButton, Skeleton, Stack } from "@mui/material";
 import { grayColor, orange } from "../components/constants/color";
 import {
   AttachFile as AttachFileIcon,
@@ -10,15 +10,23 @@ import { InputBox } from "../components/styles/StyledComponents";
 import FileMenu from "../components/Dialog/FileMenu";
 import Message from "../components/shared/Message";
 import { sampleMessage } from "../components/constants/sampleData";
+import { getSocket } from "../socket";
+import { useGetChatDetailsQuery } from "../redux/api/api";
 
 const user = {
   _id: "12",
   name: "Apurv",
 };
 
-const Chat = () => {
+const Chat = ({ chatId, members }) => {
   const containerRef = useRef(null);
-  return (
+  const socket = getSocket();
+
+  const chatDetails = useGetChatDetailsQuery({ chatId, skip: !chatId });
+
+  return chatDetails.isLoading ? (
+    <Skeleton />
+  ) : (
     <>
       <Stack
         ref={containerRef}
