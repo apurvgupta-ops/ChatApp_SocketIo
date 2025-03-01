@@ -32,5 +32,5 @@ router
   .put(renameGroup)
   .delete(deleteChat);
 
-router.get("/messages", getMessages)
+router.get("/messages/:chatId", getMessages)
 export default router;
